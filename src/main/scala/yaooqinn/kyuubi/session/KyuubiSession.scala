@@ -136,7 +136,10 @@ private[kyuubi] class KyuubiSession(
 
   @throws[KyuubiSQLException]
   def open(sessionConf: Map[String, String]): Unit = {
+    info("begin init sparkSessionWithUGI")
     sparkSessionWithUGI.init(sessionConf)
+    info("after init sparkSessionWithUGI")
+
     lastAccessTime = System.currentTimeMillis
     lastIdleTime = lastAccessTime
   }
