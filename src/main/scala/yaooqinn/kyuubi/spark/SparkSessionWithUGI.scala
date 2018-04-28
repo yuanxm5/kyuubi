@@ -150,11 +150,10 @@ class SparkSessionWithUGI(user: UserGroupInformation, conf: SparkConf) extends L
           newContext().start()
           val context =
             Await.result(promisedSparkContext.future, Duration(totalWaitTime, TimeUnit.SECONDS))
-//          _sparkSession = ReflectUtils.newInstance(
-//            classOf[SparkSession].getName,
-//            Seq(classOf[SparkContext]),
-//            Seq(context)).asInstanceOf[SparkSession]
-          _sparkSession = new SparkSession(context)
+          _sparkSession = ReflectUtils.newInstance(
+            classOf[SparkSession].getName,
+            Seq(classOf[SparkContext]),
+            Seq(context)).asInstanceOf[SparkSession]
         }
       })
       SparkSessionCacheManager.get.set(userName, _sparkSession)
