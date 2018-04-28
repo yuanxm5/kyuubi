@@ -137,6 +137,7 @@ private[kyuubi] class KyuubiSession(
   @throws[KyuubiSQLException]
   def open(sessionConf: Map[String, String]): Unit = {
     info("begin init sparkSessionWithUGI")
+    info(s"sessionConf: $sessionConf")
     sparkSessionWithUGI.init(sessionConf)
     info("after init sparkSessionWithUGI")
 
