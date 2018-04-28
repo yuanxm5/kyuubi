@@ -50,7 +50,8 @@ class SparkSessionWithUGI(user: UserGroupInformation, conf: SparkConf) extends L
     new Thread(s"Start-SparkContext-$userName") {
       override def run(): Unit = {
         try {
-          promisedSparkContext.trySuccess(new SparkContext(conf))
+//          promisedSparkContext.trySuccess(new SparkContext(conf))
+          promisedSparkContext.trySuccess(SparkContext.getOrCreate(conf))
         } catch {
           case NonFatal(e) => throw e
         }
