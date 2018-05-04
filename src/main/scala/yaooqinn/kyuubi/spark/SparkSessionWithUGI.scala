@@ -190,6 +190,8 @@ class SparkSessionWithUGI(user: UserGroupInformation, conf: SparkConf) extends L
   def init(sessionConf: Map[String, String]): Unit = {
     try {
       getOrCreate(sessionConf)
+      // in case of token expire
+      user.reloginFromKeytab()
       initialDatabase.foreach { db =>
         user.doAs(new PrivilegedExceptionAction[Unit] {
           override def run(): Unit = _sparkSession.sql(db)
