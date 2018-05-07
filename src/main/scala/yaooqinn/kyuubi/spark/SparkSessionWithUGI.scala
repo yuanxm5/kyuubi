@@ -51,7 +51,6 @@ class SparkSessionWithUGI(user: UserGroupInformation, conf: SparkConf) extends L
       override def run(): Unit = {
         try {
           promisedSparkContext.trySuccess(new SparkContext(conf))
-//          promisedSparkContext.trySuccess(SparkContext.getOrCreate(conf))
         } catch {
           case NonFatal(e) => throw e
         }
