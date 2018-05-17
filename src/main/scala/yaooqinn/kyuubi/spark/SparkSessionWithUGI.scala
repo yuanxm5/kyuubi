@@ -143,7 +143,7 @@ class SparkSessionWithUGI(user: UserGroupInformation, conf: SparkConf) extends L
     conf.setAppName(appName)
     configureSparkConf(sessionConf)
     // test
-    conf.set("spark.yarn.queue", "root.hwyn3816")
+//    conf.set("spark.yarn.queue", "root.hwyn3816")
     val totalWaitTime: Long = conf.getTimeAsSeconds(BACKEND_SESSTION_INIT_TIMEOUT.key)
     try {
       user.doAs(new PrivilegedExceptionAction[Unit] {
