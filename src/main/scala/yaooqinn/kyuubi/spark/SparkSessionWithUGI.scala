@@ -144,7 +144,8 @@ class SparkSessionWithUGI(user: UserGroupInformation, conf: SparkConf) extends L
     configureSparkConf(sessionConf)
     // submit to one queue
     // todo read from jdbc url
-    val queue = conf.get(KYUUBI_SPARK_YARN_QUEUE.key)
+    val queue = conf.get(KYUUBI_DEFAULT_YARN_QUEUE.key)
+    info(s"Default yarn queue is $queue")
     conf.set("spark.yarn.queue", queue)
     info(s"Set default yarn queue to $queue")
     val totalWaitTime: Long = conf.getTimeAsSeconds(BACKEND_SESSTION_INIT_TIMEOUT.key)

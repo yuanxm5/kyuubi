@@ -313,8 +313,8 @@ object KyuubiConf {
   //                                         Other                                           //
   /////////////////////////////////////////////////////////////////////////////////////////////////
 
-  val KYUUBI_SPARK_YARN_QUEUE: ConfigEntry[String] =
-    KyuubiConfigBuilder("spark.yarn.queue")
+  val KYUUBI_DEFAULT_YARN_QUEUE: ConfigEntry[String] =
+    KyuubiConfigBuilder("kyuubi.default.yarn.queue")
       .doc("Default yarn queue.")
       .stringConf
       .createWithDefault("root.us_default")
