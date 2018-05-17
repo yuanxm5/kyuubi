@@ -317,7 +317,7 @@ object KyuubiConf {
     KyuubiConfigBuilder("spark.yarn.queue")
       .doc("Default yarn queue.")
       .stringConf
-      .createWithDefault("us_default")
+      .createWithDefault("root.us_default")
 
   /**
    * Return all the configuration definitions that have been defined in [[KyuubiConf]]. Each
