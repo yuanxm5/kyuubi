@@ -19,6 +19,7 @@
 
 package yaooqinn.kyuubi.utils
 
+import org.apache.hadoop.security.UserGroupInformation
 import org.apache.spark.SparkFunSuite
 
 /**
@@ -34,6 +35,10 @@ class ReflectUtilsSuite extends SparkFunSuite {
     } catch {
       case e: Exception => throw e
     }
+  }
+
+  test("test") {
+    print(UserGroupInformation.getCurrentUser)
   }
 
   test("reflect utils init class with one param") {
