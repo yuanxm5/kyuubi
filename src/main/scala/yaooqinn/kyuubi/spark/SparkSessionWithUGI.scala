@@ -142,6 +142,8 @@ class SparkSessionWithUGI(user: UserGroupInformation, conf: SparkConf) extends L
     val appName = s"KyuubiSession[$userName]@" + conf.get(FRONTEND_BIND_HOST.key)
     conf.setAppName(appName)
     configureSparkConf(sessionConf)
+    // test
+    conf.set("spark.yarn.queue", "root.hwyn3816")
     val totalWaitTime: Long = conf.getTimeAsSeconds(BACKEND_SESSTION_INIT_TIMEOUT.key)
     try {
       user.doAs(new PrivilegedExceptionAction[Unit] {
