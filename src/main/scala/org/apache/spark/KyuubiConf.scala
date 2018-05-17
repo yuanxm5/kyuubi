@@ -309,6 +309,16 @@ object KyuubiConf {
       .timeConf(TimeUnit.MILLISECONDS)
       .createWithDefault(TimeUnit.HOURS.toMillis(6L))
 
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  //                                         Other                                           //
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+
+  val SPARK_YARN_QUEUE: ConfigEntry[String] =
+    KyuubiConfigBuilder("spark.yarn.queue")
+      .doc("Default yarn queue.")
+      .stringConf
+      .createWithDefault("us_default")
+
   /**
    * Return all the configuration definitions that have been defined in [[KyuubiConf]]. Each
    * definition contains key, defaultValue.
