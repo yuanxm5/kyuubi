@@ -39,12 +39,19 @@ class SparkSessionCacheManager(conf: SparkConf) extends Logging {
   private[this] val userToSparkSession =
     new ConcurrentHashMap[String, (SparkSession, AtomicInteger)]
 
+  private[this] val userInfo =
+    new ConcurrentHashMap[String, (SparkSession, AtomicInteger)]
+
   private[this] val userLatestLogout = new ConcurrentHashMap[String, Long]
   private[this] val idleTimeout =
     math.max(conf.getTimeAsMs(BACKEND_SESSION_IDLE_TIMEOUT.key), 60 * 1000)
 
   def set(user: String, sparkSession: SparkSession): Unit = {
     userToSparkSession.put(user, (sparkSession, new AtomicInteger(1)))
+  }
+
+  def getUserCount: Int = {
+    userToSparkSession.size()
   }
 
   def getAndIncrease(user: String): Option[SparkSession] = {

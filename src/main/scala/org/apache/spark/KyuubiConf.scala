@@ -319,6 +319,19 @@ object KyuubiConf {
       .stringConf
       .createWithDefault("root.us_default")
 
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  //                                         Others                                           //
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+
+  val MAX_ONLINE_USER: ConfigEntry[Int] =
+    KyuubiConfigBuilder("spark.kyuubi.max.online.user")
+      .doc("How many times to check when another session with the same user is initializing " +
+        "SparkContext. Total Time will be times by " +
+        "`spark.kyuubi.backend.session.wait.other.interval`")
+      .intConf
+      .createWithDefault(100)
+
   /**
    * Return all the configuration definitions that have been defined in [[KyuubiConf]]. Each
    * definition contains key, defaultValue.

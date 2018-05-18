@@ -26,3 +26,9 @@ class AnonymousAuthenticationProviderImplSuite extends SparkFunSuite {
   }
 
 }
+
+object A{
+  def main(args: Array[String]) {
+    print("aa")
+  }
+}

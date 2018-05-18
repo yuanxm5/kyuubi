@@ -131,6 +131,11 @@ class SparkSessionWithUGI(user: UserGroupInformation, conf: SparkConf) extends L
         _sparkSession = ss.newSession()
         configureSparkSession(sessionConf)
       case _ =>
+        val onlineUser = SparkSessionCacheManager.get.getUserCount
+        if (onlineUser > conf.get(MAX_ONLINE_USER.key).toInt) {
+          throw new KyuubiSQLException(s"Kyuubi online user exceeded the limit, " +
+            s"current online user number:  $onlineUser")
+        }
         SparkSessionWithUGI.setPartiallyConstructed(userName)
         notifyAll()
         create(sessionConf)
