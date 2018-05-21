@@ -23,6 +23,10 @@ class UserInfoManager extends Logging {
     }
   }
 
+  def remove(username: String) = {
+    userToUserInfo.remove(username)
+  }
+
   def getUserInfo(username: String): Option[UserInfo] = {
     userToUserInfo.asScala.get(username)
   }

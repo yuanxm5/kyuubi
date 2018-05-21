@@ -41,9 +41,6 @@ class SparkSessionCacheManager(conf: SparkConf) extends Logging {
   private[this] val userToSparkSession =
     new ConcurrentHashMap[String, (SparkSession, AtomicInteger)]
 
-  private[this] val userInfo =
-    new ConcurrentHashMap[String, (SparkSession, AtomicInteger)]
-
   private[this] val userLatestLogout = new ConcurrentHashMap[String, Long]
   private[this] val idleTimeout =
     math.max(conf.getTimeAsMs(BACKEND_SESSION_IDLE_TIMEOUT.key), 60 * 1000)
@@ -98,6 +95,7 @@ class SparkSessionCacheManager(conf: SparkConf) extends Logging {
           info(s"Stopping idle SparkSession for user [$user], idle timeout setting is ${getIdleTimeout(user)} ms, " +
             s"last logout time is ${userLatestLogout.get(user)}")
           removeSparkSession(user)
+          UserInfoManager.get.remove(user)
           session.stop()
           if (conf.get("spark.master").startsWith("yarn")) {
             System.setProperty("SPARK_YARN_MODE", "true")
