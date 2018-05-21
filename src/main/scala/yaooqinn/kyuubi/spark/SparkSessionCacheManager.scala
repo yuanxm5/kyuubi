@@ -95,8 +95,8 @@ class SparkSessionCacheManager(conf: SparkConf) extends Logging {
         case (user, (_, _)) if !userLatestLogout.containsKey(user) =>
         case (user, (session, _))
           if userLatestLogout.get(user) + getIdleTimeout(user) <= System.currentTimeMillis() =>
-          val timeout = getIdleTimeout(user)
-          info(s"Stopping idle SparkSession for user [$user], idle timeout setting is $timeout minute")
+          info(s"Stopping idle SparkSession for user [$user], idle timeout setting is ${getIdleTimeout(user)} ms, " +
+            s"last logout time is ${userLatestLogout.get(user)}")
           removeSparkSession(user)
           session.stop()
           if (conf.get("spark.master").startsWith("yarn")) {

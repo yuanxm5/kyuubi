@@ -106,5 +106,6 @@ object KyuubiServer extends Logging {
       "org.apache.hadoop.hive.thrift.MemoryTokenStore")
     // Set missing Kyuubi configs to SparkConf
     KyuubiConf.getAllDefaults.foreach(kv => conf.setIfMissing(kv._1, kv._2))
+    println(conf.toDebugString)
   }
 }
