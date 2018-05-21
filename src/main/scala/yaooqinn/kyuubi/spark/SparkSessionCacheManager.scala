@@ -20,6 +20,8 @@ package yaooqinn.kyuubi.spark
 import java.util.concurrent.{ConcurrentHashMap, Executors, TimeUnit}
 import java.util.concurrent.atomic.AtomicInteger
 
+import yaooqinn.kyuubi.user.UserInfoManager
+
 import scala.collection.JavaConverters._
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder
@@ -92,14 +94,29 @@ class SparkSessionCacheManager(conf: SparkConf) extends Logging {
             s" of $user ")
         case (user, (_, _)) if !userLatestLogout.containsKey(user) =>
         case (user, (session, _))
-          if userLatestLogout.get(user) + idleTimeout <= System.currentTimeMillis() =>
-          info(s"Stopping idle SparkSession for user [$user].")
+          if userLatestLogout.get(user) + getIdleTimeout(user) <= System.currentTimeMillis() =>
+          val timeout = getIdleTimeout(user)
+          info(s"Stopping idle SparkSession for user [$user], idle timeout setting is $timeout minute")
           removeSparkSession(user)
           session.stop()
           if (conf.get("spark.master").startsWith("yarn")) {
             System.setProperty("SPARK_YARN_MODE", "true")
           }
         case _ =>
+      }
+    }
+    def getIdleTimeout(username: String): Long = {
+      val default = idleTimeout
+      UserInfoManager.get.getUserInfo(username) match {
+        case Some(u) => u.getConf.get(KYUUBI_SESSION_IDLE_TIMEOUT.key) match {
+          case Some(minute) => minute.toLong * 60 * 1000
+          case _ =>
+            info("spark.kyuubi.backend.session.idle.timeout is not set, use default value: 30min")
+            default
+        }
+        case _ =>
+          warn("UserInfo is not set, use default value: 30min")
+          default
       }
     }
   }

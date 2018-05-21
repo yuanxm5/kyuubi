@@ -22,6 +22,8 @@ import java.util.Date
 import java.util.concurrent._
 import java.util.concurrent.atomic.AtomicInteger
 
+import yaooqinn.kyuubi.user.UserInfoManager
+
 import scala.collection.JavaConverters._
 
 import org.apache.commons.io.FileUtils
@@ -182,6 +184,7 @@ private[kyuubi] class SessionManager private(
       startTimeoutChecker()
     }
     SparkSessionCacheManager.startCacheManager(conf)
+    UserInfoManager.start()
   }
 
   override def stop(): Unit = {

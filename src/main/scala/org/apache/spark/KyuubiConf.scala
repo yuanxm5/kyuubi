@@ -310,27 +310,36 @@ object KyuubiConf {
       .createWithDefault(TimeUnit.HOURS.toMillis(6L))
 
   /////////////////////////////////////////////////////////////////////////////////////////////////
-  //                                         Other                                           //
+  //                                         Session                                             //
   /////////////////////////////////////////////////////////////////////////////////////////////////
 
   val KYUUBI_DEFAULT_YARN_QUEUE: ConfigEntry[String] =
-    KyuubiConfigBuilder("kyuubi.default.yarn.queue")
+    KyuubiConfigBuilder("kyuubi.session.default.yarn.queue")
       .doc("Default yarn queue.")
       .stringConf
       .createWithDefault("root.us_default")
 
-
-  /////////////////////////////////////////////////////////////////////////////////////////////////
-  //                                         Others                                           //
-  /////////////////////////////////////////////////////////////////////////////////////////////////
+  val OVERWRITE_LAST_SESSION_CONF: ConfigEntry[Boolean] =
+    KyuubiConfigBuilder("kyuubi.session.overwrite.last.conf")
+      .doc("When true, KyuubiServer will save operation logs and make them available for clients")
+      .booleanConf
+      .createWithDefault(false)
 
   val MAX_ONLINE_USER: ConfigEntry[Int] =
-    KyuubiConfigBuilder("spark.kyuubi.max.online.user")
+    KyuubiConfigBuilder("kyuubi.session.max.online.user")
       .doc("How many times to check when another session with the same user is initializing " +
         "SparkContext. Total Time will be times by " +
         "`spark.kyuubi.backend.session.wait.other.interval`")
       .intConf
-      .createWithDefault(100)
+      .createWithDefault(1000)
+
+  val KYUUBI_SESSION_IDLE_TIMEOUT: ConfigEntry[Long] =
+    KyuubiConfigBuilder("kyuubi.session.idle.timeout")
+      .doc("How many times to check when another session with the same user is initializing " +
+        "SparkContext. Total Time will be times by " +
+        "`spark.kyuubi.backend.session.wait.other.interval`")
+      .longConf
+      .createWithDefault(30L)
 
   /**
    * Return all the configuration definitions that have been defined in [[KyuubiConf]]. Each

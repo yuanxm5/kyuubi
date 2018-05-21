@@ -21,6 +21,8 @@ import java.lang.reflect.UndeclaredThrowableException
 import java.security.PrivilegedExceptionAction
 import java.util.concurrent.TimeUnit
 
+import yaooqinn.kyuubi.user.{UserInfo, UserInfoManager}
+
 import scala.collection.mutable.{HashSet => MHSet}
 import scala.concurrent.{Await, Promise, TimeoutException}
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -71,7 +73,8 @@ class SparkSessionWithUGI(user: UserGroupInformation, conf: SparkConf) extends L
 
   /**
    * Setting configuration from connection strings before SparkConext init.
-   * @param sessionConf configurations for user connection string
+    *
+    * @param sessionConf configurations for user connection string
    */
   private[this] def configureSparkConf(sessionConf: Map[String, String]): Unit = {
     for ((key, value) <- sessionConf) {
@@ -95,7 +98,8 @@ class SparkSessionWithUGI(user: UserGroupInformation, conf: SparkConf) extends L
 
   /**
    * Setting configuration from connection strings for existing SparkSession
-   * @param sessionConf configurations for user connection string
+    *
+    * @param sessionConf configurations for user connection string
    */
   private[this] def configureSparkSession(sessionConf: Map[String, String]): Unit = {
     for ((key, value) <- sessionConf) {
@@ -125,6 +129,9 @@ class SparkSessionWithUGI(user: UserGroupInformation, conf: SparkConf) extends L
       }
       info(s"A partially constructed SparkContext for [$userName], $checkRound times countdown.")
     }
+
+    // register user info
+    UserInfoManager.get.setIfNotExist(userName, new UserInfo(sessionConf))
 
     SparkSessionCacheManager.get.getAndIncrease(userName) match {
       case Some(ss) =>
