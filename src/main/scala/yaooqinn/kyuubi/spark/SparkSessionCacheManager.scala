@@ -111,7 +111,7 @@ class SparkSessionCacheManager(conf: SparkConf) extends Logging {
         case Some(u) => u.getConf.get(KYUUBI_SESSION_IDLE_TIMEOUT.key) match {
           case Some(minute) => minute.toLong * 60 * 1000
           case _ =>
-            info("spark.kyuubi.backend.session.idle.timeout is not set, use default value: 30min")
+            info("kyuubi.session.idle.timeout is not set, use default value: 30min")
             default
         }
         case _ =>
