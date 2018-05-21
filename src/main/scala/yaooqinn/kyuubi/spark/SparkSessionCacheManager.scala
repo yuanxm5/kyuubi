@@ -105,13 +105,15 @@ class SparkSessionCacheManager(conf: SparkConf) extends Logging {
         case _ =>
       }
     }
+
     def getIdleTimeout(username: String): Long = {
       val default = idleTimeout
+      val prefix = "set:hivevar:"
       UserInfoManager.get.getUserInfo(username) match {
-        case Some(u) => u.getConf.get(KYUUBI_SESSION_IDLE_TIMEOUT.key) match {
+        case Some(u) => u.getConf.get(prefix + KYUUBI_SESSION_IDLE_TIMEOUT.key) match {
           case Some(minute) => minute.toLong * 60 * 1000
           case _ =>
-            info("kyuubi.session.idle.timeout is not set, use default value: 30min")
+            info(s"kyuubi.session.idle.timeout for user $username is not set, use default value: 30min")
             default
         }
         case _ =>
@@ -120,9 +122,10 @@ class SparkSessionCacheManager(conf: SparkConf) extends Logging {
       }
     }
   }
+
   /**
-   * Periodically close idle SparkSessions in 'spark.kyuubi.session.clean.interval(default 5min)'
-   */
+    * Periodically close idle SparkSessions in 'spark.kyuubi.session.clean.interval(default 5min)'
+    */
   def start(): Unit = {
     // at least 1 minutes
     val interval = math.max(conf.getTimeAsSeconds(BACKEND_SESSION_CHECK_INTERVAL.key), 60)
