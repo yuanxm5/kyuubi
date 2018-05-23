@@ -104,6 +104,8 @@ object KyuubiServer extends Logging {
     // The delegation token store implementation. Set to MemoryTokenStore always.
     conf.set("spark.hadoop.hive.cluster.delegation.token.store.class",
       "org.apache.hadoop.hive.thrift.MemoryTokenStore")
+    // enable multi filesystem
+    conf.set("fs.hdfs.impl.disable.cache", "true")
     // Set missing Kyuubi configs to SparkConf
     KyuubiConf.getAllDefaults.foreach(kv => conf.setIfMissing(kv._1, kv._2))
     println(conf.toDebugString)
