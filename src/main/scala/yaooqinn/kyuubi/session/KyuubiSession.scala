@@ -34,7 +34,7 @@ import yaooqinn.kyuubi.auth.KyuubiAuthFactory
 import yaooqinn.kyuubi.cli._
 import yaooqinn.kyuubi.operation.{KyuubiOperation, OperationHandle, OperationManager}
 import yaooqinn.kyuubi.schema.RowSet
-import yaooqinn.kyuubi.spark.SparkSessionWithUGI
+import yaooqinn.kyuubi.spark.{SparkSessionCacheManager, SparkSessionWithUGI}
 
 /**
  * An Execution Session with [[SparkSession]] instance inside, which shares [[SparkContext]]
@@ -198,7 +198,10 @@ private[kyuubi] class KyuubiSession(
     } finally {
       release(true)
       try {
-        FileSystem.closeAllForUGI(sessionUGI)
+        if(SparkSessionCacheManager.get.getUserReusedCount(username) <= 0) {
+          info(s"SparkSession for [$username] is never reused, close file system")
+          FileSystem.closeAllForUGI(sessionUGI)
+        }
       } catch {
         case ioe: IOException =>
           throw new KyuubiSQLException("Could not clean up file-system handles for UGI: "

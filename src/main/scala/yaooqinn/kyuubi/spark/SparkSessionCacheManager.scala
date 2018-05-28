@@ -53,6 +53,10 @@ class SparkSessionCacheManager(conf: SparkConf) extends Logging {
     userToSparkSession.size()
   }
 
+  def getUserReusedCount(user: String): Int = {
+    userToSparkSession.get(user)._2.get
+  }
+
   def getAndIncrease(user: String): Option[SparkSession] = {
     Some(userToSparkSession.get(user)) match {
       case Some((ss, times)) if !ss.sparkContext.isStopped =>
