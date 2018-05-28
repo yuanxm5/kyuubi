@@ -29,13 +29,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.util.control.NonFatal
 
-import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveAccessControlException
 import org.apache.hadoop.security.UserGroupInformation
-import org.apache.spark.{SparkConf, SparkContext, SparkUtils}
+import org.apache.spark.{KyuubiSparkUtil, SparkConf, SparkContext}
 import org.apache.spark.KyuubiConf._
-import org.apache.spark.SparkUtils._
+import org.apache.spark.KyuubiSparkUtil._
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.catalyst.analysis.NoSuchDatabaseException
 import org.apache.spark.ui.KyuubiServerTab
 
 import yaooqinn.kyuubi.{KyuubiSQLException, Logging}
@@ -52,7 +50,9 @@ class SparkSessionWithUGI(user: UserGroupInformation, conf: SparkConf) extends L
     new Thread(s"Start-SparkContext-$userName") {
       override def run(): Unit = {
         try {
-          promisedSparkContext.trySuccess(new SparkContext(conf))
+          promisedSparkContext.trySuccess {
+            new SparkContext(conf)
+          }
         } catch {
           case NonFatal(e) => throw e
         }
@@ -92,8 +92,8 @@ class SparkSessionWithUGI(user: UserGroupInformation, conf: SparkConf) extends L
     }
 
     // proxy user does not have rights to get token as real user
-    conf.remove(SparkUtils.KEYTAB)
-    conf.remove(SparkUtils.PRINCIPAL)
+    conf.remove(KyuubiSparkUtil.KEYTAB)
+    conf.remove(KyuubiSparkUtil.PRINCIPAL)
   }
 
   /**
@@ -215,13 +215,8 @@ class SparkSessionWithUGI(user: UserGroupInformation, conf: SparkConf) extends L
         })
       }
     } catch {
-      case ute: UndeclaredThrowableException => ute.getCause match {
-        case e: HiveAccessControlException =>
-          throw new KyuubiSQLException(e.getMessage, "08S01", e.getCause)
-        case e: NoSuchDatabaseException =>
-          throw new KyuubiSQLException(e.getMessage, "08S01", e.getCause)
-        case e: KyuubiSQLException => throw e
-      }
+      case ute: UndeclaredThrowableException => throw ute.getCause
+      case e: Exception => throw e
     }
   }
 }

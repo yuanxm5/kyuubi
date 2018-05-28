@@ -27,6 +27,9 @@ dist/
 kyuubi-*-bin-*
 *.gz
 logs/
+pid/
+local/
 out/
 hs_err_pid*
+spark-warehouse/
 

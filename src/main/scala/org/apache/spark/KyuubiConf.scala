@@ -113,8 +113,7 @@ object KyuubiConf {
         " enabled")
       .stringConf
       .createWithDefault(
-        s"${sys.env.getOrElse("SPARK_LOG_DIR",
-          sys.env.getOrElse("SPARK_HOME", System.getProperty("java.io.tmpdir")))}"
+        s"${sys.env.getOrElse("KYUUBI_LOG_DIR", System.getProperty("java.io.tmpdir"))}"
           + File.separator + "operation_logs")
 
   /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,7 +147,7 @@ object KyuubiConf {
       .createWithDefault(TimeUnit.SECONDS.toMillis(10L))
 
   /////////////////////////////////////////////////////////////////////////////////////////////////
-  //                                       KyuubiSession                                         //
+  //                                       Kyuubi Session                                        //
   /////////////////////////////////////////////////////////////////////////////////////////////////
 
   val FRONTEND_SESSION_CHECK_INTERVAL: ConfigEntry[Long] =
@@ -183,7 +182,7 @@ object KyuubiConf {
     KyuubiConfigBuilder("spark.kyuubi.frontend.bind.host")
       .doc("Bind host on which to run the Kyuubi Server.")
       .stringConf
-      .createWithDefault(SparkUtils.localHostName())
+      .createWithDefault(KyuubiSparkUtil.localHostName())
 
   val FRONTEND_BIND_PORT: ConfigEntry[Int] =
     KyuubiConfigBuilder("spark.kyuubi.frontend.bind.port")
@@ -277,6 +276,14 @@ object KyuubiConf {
       .timeConf(TimeUnit.MILLISECONDS)
       .createWithDefault(TimeUnit.MINUTES.toMillis(30L))
 
+  val BACKEND_SESSION_LOCAL_DIR: ConfigEntry[String] =
+    KyuubiConfigBuilder("spark.kyuubi.backend.session.local.dir")
+      .doc("Default value to set spark.local.dir")
+      .stringConf
+      .createWithDefault(
+        s"${sys.env.getOrElse("KYUUBI_HOME", System.getProperty("java.io.tmpdir"))}"
+        + File.separator + "local")
+
   /////////////////////////////////////////////////////////////////////////////////////////////////
   //                                      Authentication                                         //
   /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -308,6 +315,13 @@ object KyuubiConf {
       .doc("Operation will be closed when it's not accessed for this duration of time")
       .timeConf(TimeUnit.MILLISECONDS)
       .createWithDefault(TimeUnit.HOURS.toMillis(6L))
+
+  val OPERATION_INCREMENTAL_COLLECT: ConfigEntry[Boolean] =
+    KyuubiConfigBuilder("spark.kyuubi.operation.incremental.collect")
+      .doc("Whether to use incremental result collection from Spark executor side to Kyuubi" +
+        " server side")
+      .booleanConf
+    .createWithDefault(false)
 
   /////////////////////////////////////////////////////////////////////////////////////////////////
   //                                         Session                                             //

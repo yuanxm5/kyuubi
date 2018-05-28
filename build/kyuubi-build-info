@@ -17,14 +17,19 @@
 # limitations under the License.
 #
 
-## a runnable spark binary path
-# export SPARK_HOME=/Users/Kent/Documents/spark
+EXTRA_RESOURCE_DIR="$1"
+mkdir -p "$EXTRA_RESOURCE_DIR"
+BUILD_INFO="$EXTRA_RESOURCE_DIR"/kyuubi-version-info.properties
 
-# Find the spark-submit
-if [ -z "$SPARK_HOME" ]; then
-  echo "Kyuubi Server: SPARK_HOME IS NOT SET!" >&2
-  exit 1
-fi
+echo_build_properties() {
+  echo kyuubi_version=$1
+  echo spark_version=$2
+  echo user="$USER"
+  echo jar=kyuubi-$1.jar
+  echo revision=$(git rev-parse HEAD)
+  echo branch=$(git rev-parse --abbrev-ref HEAD)
+  echo date=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+  echo url=$(git config --get remote.origin.url)
+}
 
-export KYUUBI_HOME="$(cd "`dirname "$0"`"/..; pwd)"
-export KYUUBI_SUBMIT_ENABLE=true
+echo_build_properties $2 $3 > "$BUILD_INFO"

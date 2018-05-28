@@ -15,30 +15,9 @@
  * limitations under the License.
  */
 
-package org.apache.spark
+package yaooqinn.kyuubi
 
-import java.security.PrivilegedExceptionAction
-
-import org.apache.hadoop.security.UserGroupInformation
-
-class SparkUtilsSuite extends SparkFunSuite {
-
-
-  test("get current user name") {
-    val user = SparkUtils.getCurrentUserName()
-    assert(user === System.getProperty("user.name"))
-  }
-
-  test("get user with impersonation") {
-    val currentUser = UserGroupInformation.getCurrentUser
-    val user1 = SparkUtils.getCurrentUserName()
-    assert(user1 === currentUser.getShortUserName)
-    val remoteUser = UserGroupInformation.createRemoteUser("test")
-    remoteUser.doAs(new PrivilegedExceptionAction[Unit] {
-      override def run(): Unit = {
-        val user2 = SparkUtils.getCurrentUserName()
-        assert(user2 === remoteUser.getShortUserName)
-      }
-    })
-  }
+class KyuubiServerException(message: String, cause: Throwable) extends Exception(message, cause) {
+  def this(message: String) = this(message, null)
+  def this(cause: Throwable) = this(null, cause)
 }
