@@ -202,7 +202,7 @@ private[kyuubi] class KyuubiSession(
     } finally {
       release(true)
       try {
-        if(UserInfoManager.get.isAccessable(username)) {
+        if(!UserInfoManager.get.isAccessable(username)) {
           info(s"SparkSession for [$username] is never reused, close file system")
           FileSystem.closeAllForUGI(sessionUGI)
         }
