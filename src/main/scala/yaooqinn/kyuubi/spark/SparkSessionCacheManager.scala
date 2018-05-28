@@ -54,7 +54,10 @@ class SparkSessionCacheManager(conf: SparkConf) extends Logging {
   }
 
   def getUserReusedCount(user: String): Int = {
-    userToSparkSession.get(user)._2.get
+    userToSparkSession.asScala.get(user) match {
+      case Some((username, times)) => times.get
+      case _ => 0
+    }
   }
 
   def getAndIncrease(user: String): Option[SparkSession] = {

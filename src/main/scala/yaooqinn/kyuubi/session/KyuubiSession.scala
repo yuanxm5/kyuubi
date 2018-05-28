@@ -19,6 +19,8 @@ package yaooqinn.kyuubi.session
 
 import java.io.{File, IOException}
 
+import yaooqinn.kyuubi.user.UserInfoManager
+
 import scala.collection.mutable.{HashSet => MHSet}
 
 import org.apache.commons.io.FileUtils
@@ -35,6 +37,8 @@ import yaooqinn.kyuubi.cli._
 import yaooqinn.kyuubi.operation.{KyuubiOperation, OperationHandle, OperationManager}
 import yaooqinn.kyuubi.schema.RowSet
 import yaooqinn.kyuubi.spark.{SparkSessionCacheManager, SparkSessionWithUGI}
+
+import scala.collection.JavaConverters._
 
 /**
  * An Execution Session with [[SparkSession]] instance inside, which shares [[SparkContext]]
@@ -198,7 +202,7 @@ private[kyuubi] class KyuubiSession(
     } finally {
       release(true)
       try {
-        if(SparkSessionCacheManager.get.getUserReusedCount(username) <= 0) {
+        if(UserInfoManager.get.isAccessable(username)) {
           info(s"SparkSession for [$username] is never reused, close file system")
           FileSystem.closeAllForUGI(sessionUGI)
         }
