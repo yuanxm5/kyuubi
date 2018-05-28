@@ -127,6 +127,9 @@ object KyuubiServer extends Logging {
 
     conf.setIfMissing(
       KyuubiSparkUtil.SPARK_LOCAL_DIR, conf.get(KyuubiConf.BACKEND_SESSION_LOCAL_DIR.key))
+
+    // print all config
+    println(conf.toDebugString)
   }
 
   private[kyuubi] def validate(): Unit = {
@@ -149,6 +152,5 @@ object KyuubiServer extends Logging {
             getShortUserName} to connect")
       }
     }
-    println(conf.toDebugString)
   }
 }

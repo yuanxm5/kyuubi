@@ -155,7 +155,6 @@ class SparkSessionWithUGI(user: UserGroupInformation, conf: SparkConf) extends L
     conf.setAppName(appName)
     configureSparkConf(sessionConf)
     // submit to one queue
-    // todo read from jdbc url
     val queue = conf.get(KYUUBI_DEFAULT_YARN_QUEUE.key)
     info(s"Default yarn queue is $queue")
     conf.set("spark.yarn.queue", queue)
