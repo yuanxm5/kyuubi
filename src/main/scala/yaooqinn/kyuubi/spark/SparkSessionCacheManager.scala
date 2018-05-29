@@ -17,9 +17,12 @@
 
 package yaooqinn.kyuubi.spark
 
+import java.io.IOException
 import java.util.concurrent.{ConcurrentHashMap, Executors, TimeUnit}
 import java.util.concurrent.atomic.AtomicInteger
 
+import org.apache.hadoop.fs.FileSystem
+import org.apache.hadoop.security.UserGroupInformation
 import yaooqinn.kyuubi.user.UserInfoManager
 
 import scala.collection.JavaConverters._
@@ -29,7 +32,7 @@ import org.apache.spark.KyuubiConf._
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
 
-import yaooqinn.kyuubi.Logging
+import yaooqinn.kyuubi.{KyuubiSQLException, Logging}
 import yaooqinn.kyuubi.ui.KyuubiServerMonitor
 
 class SparkSessionCacheManager(conf: SparkConf) extends Logging {
@@ -104,6 +107,15 @@ class SparkSessionCacheManager(conf: SparkConf) extends Logging {
           removeSparkSession(user)
           UserInfoManager.get.remove(user)
           session.stop()
+
+          try {
+            info(s"Closing file-system for user $user")
+            FileSystem.closeAllForUGI(UserGroupInformation.getCurrentUser)
+          } catch {
+            case ioe: IOException =>
+              throw new KyuubiSQLException(s"Could not clean up file-system handles " +
+                s"for UGI: ${UserGroupInformation.getCurrentUser}", ioe)
+          }
           if (conf.get("spark.master").startsWith("yarn")) {
             System.setProperty("SPARK_YARN_MODE", "true")
           }

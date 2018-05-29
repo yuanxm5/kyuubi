@@ -201,7 +201,7 @@ private[kyuubi] class KyuubiSession(
       cleanupSessionLogDir()
     } finally {
       release(true)
-      try {
+      /*try {
         if(!UserInfoManager.get.isAccessable(username)) {
           info(s"SparkSession for [$username] is never reused, close file system")
           FileSystem.closeAllForUGI(sessionUGI)
@@ -210,7 +210,7 @@ private[kyuubi] class KyuubiSession(
         case ioe: IOException =>
           throw new KyuubiSQLException("Could not clean up file-system handles for UGI: "
             + sessionUGI, ioe)
-      }
+      }*/
     }
   }
 
