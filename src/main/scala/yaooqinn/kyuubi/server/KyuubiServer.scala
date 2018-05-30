@@ -121,7 +121,7 @@ object KyuubiServer extends Logging {
         info(s"Using user specified ${KyuubiSparkUtil.METASTORE_JARS}=$other")
     }
     // enable multi filesystem
-    conf.set("fs.file.impl.disable.cache", "true")
+    conf.set("fs.hdfs.impl.disable.cache", "true")
     // Set missing Kyuubi configs to SparkConf
     KyuubiConf.getAllDefaults.foreach(kv => conf.setIfMissing(kv._1, kv._2))
 
