@@ -41,7 +41,7 @@ LAUNCH_CLASSPATH=${KYUUBI_JAR}:"$SPARK_JARS_DIR/*"
 # The exit code of the launcher is appended to the output, so the parent shell removes it from the
 # command array and checks the value to see if the launcher succeeded.
 build_command() {
-  "$RUNNER" "$JMX_OPTS" -Xmx128m -cp "$LAUNCH_CLASSPATH" org.apache.spark.launcher.KyuubiMain "$@"
+  "$RUNNER" ${JMX_OPTS} -Xmx128m -cp "$LAUNCH_CLASSPATH" org.apache.spark.launcher.KyuubiMain "$@"
   printf "%d\0" $?
 }
 
