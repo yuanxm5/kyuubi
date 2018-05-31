@@ -5,8 +5,8 @@ import java.util.concurrent.ConcurrentHashMap
 
 import yaooqinn.kyuubi.Logging
 import scala.collection.JavaConverters._
-
-
+import org.apache.spark.KyuubiSparkUtil._
+import org.apache.spark.KyuubiConf._
 
 /**
   * yaooqinn.kyuubi.user.UserInfo
@@ -23,6 +23,10 @@ class UserInfoManager extends Logging {
     accessableUsers.add(username)
     Option(userToUserInfo.get(username)) match {
       case Some(u) =>
+        userInfo.getConf.get(HIVE_VAR + OVERWRITE_LAST_SESSION_CONF.key) match {
+          case Some(ov) if (ov.toBoolean) => userToUserInfo.put(username, userInfo)
+          case _ =>
+        }
       case _ => userToUserInfo.put(username, userInfo)
     }
   }

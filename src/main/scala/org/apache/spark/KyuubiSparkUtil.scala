@@ -70,6 +70,8 @@ object KyuubiSparkUtil extends Logging {
   val QUEUE = SPARK_PREFIX + YARN_PREFIX + "queue"
   val DEPRECATED_QUEUE = "mapred.job.queue.name"
 
+  val HIVE_VAR = "set:hivevar:"
+
   // Runtime Spark Version
   val SPARK_VERSION = org.apache.spark.SPARK_VERSION
 
