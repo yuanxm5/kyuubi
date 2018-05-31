@@ -262,7 +262,7 @@ object KyuubiConf {
     KyuubiConfigBuilder("spark.kyuubi.backend.session.init.timeout")
       .doc("How long we suggest the server to give up instantiating SparkContext")
       .timeConf(TimeUnit.SECONDS)
-      .createWithDefault(TimeUnit.SECONDS.toSeconds(60L))
+      .createWithDefault(TimeUnit.SECONDS.toSeconds(120L))
 
   val BACKEND_SESSION_CHECK_INTERVAL: ConfigEntry[Long] =
     KyuubiConfigBuilder("spark.kyuubi.backend.session.check.interval")
