@@ -24,7 +24,9 @@ class UserInfoManager extends Logging {
     Option(userToUserInfo.get(username)) match {
       case Some(u) =>
         userInfo.getConf.get(HIVE_VAR + OVERWRITE_LAST_SESSION_CONF.key) match {
-          case Some(ov) if (ov.toBoolean) => userToUserInfo.put(username, userInfo)
+          case Some(ov) if (ov.toBoolean) =>
+            info(s"Overwrite session conf for user: $username, conf: ${userInfo.getConf}")
+            userToUserInfo.put(username, userInfo)
           case _ =>
         }
       case _ => userToUserInfo.put(username, userInfo)
