@@ -44,6 +44,7 @@ private[kyuubi] class KyuubiServer private(name: String)
   def this() = this(classOf[KyuubiServer].getSimpleName)
 
   override def init(conf: SparkConf): Unit = synchronized {
+    System.setProperty("javax.security.auth.useSubjectCredsOnly", "false")
     this.conf = conf
     _beService = new BackendService()
     _feService = new FrontendService(_beService)
