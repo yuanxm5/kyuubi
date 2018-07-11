@@ -92,8 +92,8 @@ class SparkSessionWithUGI(user: UserGroupInformation, conf: SparkConf) extends L
     }
 
     // proxy user does not have rights to get token as real user
-    conf.remove(KyuubiSparkUtil.KEYTAB)
-    conf.remove(KyuubiSparkUtil.PRINCIPAL)
+//    conf.remove(KyuubiSparkUtil.KEYTAB)
+//    conf.remove(KyuubiSparkUtil.PRINCIPAL)
   }
 
   /**
