@@ -75,6 +75,10 @@ object KyuubiSparkUtil extends Logging {
   // Runtime Spark Version
   val SPARK_VERSION = org.apache.spark.SPARK_VERSION
 
+  def isNullOrEmpty(s: String): Boolean = {
+    s == null || s.isEmpty
+  }
+
   def addShutdownHook(f: () => Unit): Unit = {
     ShutdownHookManager.addShutdownHook(f)
   }

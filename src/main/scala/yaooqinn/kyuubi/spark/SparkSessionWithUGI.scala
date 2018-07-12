@@ -42,7 +42,9 @@ import yaooqinn.kyuubi.utils.ReflectUtils
 
 class SparkSessionWithUGI(user: UserGroupInformation, conf: SparkConf) extends Logging {
   private[this] var _sparkSession: SparkSession = _
+
   def sparkSession: SparkSession = _sparkSession
+
   private[this] val promisedSparkContext = Promise[SparkContext]()
   private[this] var initialDatabase: Option[String] = None
 
@@ -61,8 +63,8 @@ class SparkSessionWithUGI(user: UserGroupInformation, conf: SparkConf) extends L
   }
 
   /**
-   * Invoke SparkContext.stop() if not succeed initializing it
-   */
+    * Invoke SparkContext.stop() if not succeed initializing it
+    */
   private[this] def stopContext(): Unit = {
     promisedSparkContext.future.map { sc =>
       warn(s"Error occurred during initializing SparkContext for $userName, stopping")
@@ -72,10 +74,10 @@ class SparkSessionWithUGI(user: UserGroupInformation, conf: SparkConf) extends L
   }
 
   /**
-   * Setting configuration from connection strings before SparkConext init.
+    * Setting configuration from connection strings before SparkConext init.
     *
     * @param sessionConf configurations for user connection string
-   */
+    */
   private[this] def configureSparkConf(sessionConf: Map[String, String]): Unit = {
     for ((key, value) <- sessionConf) {
       key match {
@@ -94,13 +96,25 @@ class SparkSessionWithUGI(user: UserGroupInformation, conf: SparkConf) extends L
     // proxy user does not have rights to get token as real user
     conf.remove(KyuubiSparkUtil.KEYTAB)
     conf.remove(KyuubiSparkUtil.PRINCIPAL)
+
+    val keytabPath: String = conf.get(KYUUBI_KEYTAB_PATH_PREFIX.key)
+    if (!KyuubiSparkUtil.isNullOrEmpty(keytabPath)) {
+      sessionConf.get("kyuubi.user.principle") foreach {
+        principal =>
+          sessionConf.get("kyuubi.user.keytab") foreach {
+            keytab =>
+              conf.set(KyuubiSparkUtil.KEYTAB, s"$keytabPath/$keytab")
+              conf.set(KyuubiSparkUtil.PRINCIPAL, principal)
+          }
+      }
+    }
   }
 
   /**
-   * Setting configuration from connection strings for existing SparkSession
+    * Setting configuration from connection strings for existing SparkSession
     *
     * @param sessionConf configurations for user connection string
-   */
+    */
   private[this] def configureSparkSession(sessionConf: Map[String, String]): Unit = {
     for ((key, value) <- sessionConf) {
       key match {

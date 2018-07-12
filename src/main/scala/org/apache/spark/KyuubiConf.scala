@@ -355,6 +355,12 @@ object KyuubiConf {
       .longConf
       .createWithDefault(30L)
 
+  val KYUUBI_KEYTAB_PATH_PREFIX: ConfigEntry[String] =
+    KyuubiConfigBuilder("kyuubi.keytab.path.prefix")
+      .doc("Keytab path.")
+      .stringConf
+      .createWithDefault("")
+
   /**
    * Return all the configuration definitions that have been defined in [[KyuubiConf]]. Each
    * definition contains key, defaultValue.
