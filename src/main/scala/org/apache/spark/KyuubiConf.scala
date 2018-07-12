@@ -359,7 +359,7 @@ object KyuubiConf {
     KyuubiConfigBuilder("kyuubi.keytab.path.prefix")
       .doc("Keytab path.")
       .stringConf
-      .createWithDefault("")
+      .createWithDefault("/home/hadoop/spark-2.1.2-bin-hadoop2.6/keytab")
 
   /**
    * Return all the configuration definitions that have been defined in [[KyuubiConf]]. Each
